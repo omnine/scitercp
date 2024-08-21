@@ -1,0 +1,4 @@
+hello {  
+  prototype: Hello url(hello.js); // 1
+  display:block;                  // 2
+}

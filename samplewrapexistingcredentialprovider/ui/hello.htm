@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Hello</title>
+    <style src="hello.css" />
+    <script type="module">
+    import Hello from "./hello.js";
+   document.on("ready", () => {
+
+    // add simplest component to interface
+    document.$("div#simplest").content(<Hello name="8ctopus" />);
+
+});
+ 
+    
+    
+    </script>
+  </head>
+  <body>
+      <div #simplest />
+
+    <Hello />
+
+  </body>
+</html>

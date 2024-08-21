@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>G4</title>
+        <style src="main.css" /> 
+        <script>
+            document.on("ready", () => {
+            // add simplest component to interface
+//            document.$("div#logonbox").content(<LogonBox loginname="nanoart" />);
+                document.on("keyup", function (evt) {
+                    if(evt.code == "KeyF5") {
+                    Window.this.load(location.href);
+                    return true; // consume it
+                    }
+                });
+                
+                document.on("click", "button#info", function() {
+                    document.$("div#message").patch(<div#message>Diagnostic is under way, ask native to do something. Please wait... <div class="loader"></div></div>);
+                    const message = document.$("#message");
+                    const obj = {
+                        done: function (nativeText) { message.innerHTML = nativeText; },
+                    };
+                    
+                    Window.this.assetInterface.checkConnectionStatus(obj);
+
+                });
+
+            });
+
+
+        </script> 
+
+        <script type="module">
+            import {LogonBox} from "./main.js";
+        </script>        
+        
+        
+    </head>
+    <body>
+        <div class="center">
+            <h2 style="text-align: center">Computer Logon (Web Version)</h2>
+
+            <div class='container'>
+                <img#logo src="logo.png" class="resize_fit_center"/>
+            </div>
+            <logon-box loginname="nanoart"/>
+            <div#message />
+
+        </div>
+        <div class="footer"> 
+                <div class="dot tooltip"><span class="tooltiptext">Client Service Status: Good</span></div>
+                <div class="dot tooltip"><span class="tooltiptext">Logon Agent Status: Good</span></div>
+                <div class="dot tooltip"><span class="tooltiptext">DAS Status: Good</span></div>
+                <button id="info" style="margin: 1px 5px;">?</button>
+                <div style="width:80px"></div>
+        </div>     
+    </body>
+</html>
