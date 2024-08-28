@@ -14,11 +14,16 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT /Zi")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF" CACHE STRING "" FORCE)
 
 include_directories( E:/oslib/sciter-js-sdk-main/include )
+
+include_directories("D:/github/cef-project/third_party/cef/cef_binary_127.3.1+g6cbb30e+chromium-127.0.6533.100_windows64")
 include_directories( ../Helpers )
 
 
 file(GLOB HELP_SOURCES "../Helpers/*.cpp")
 file(GLOB HELP_HEADERS "../Helpers*.h")
+
+file(GLOB CEFPART_SOURCES "../cefpart/*.cc")
+file(GLOB CEFPART_HEADERS "../cefpart*.h")
 
 file(GLOB SOURCES "*.cpp")
 file(GLOB HEADERS "*.h")
@@ -54,7 +59,7 @@ add_custom_target(generate_resources ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/sci
 add_compile_options(-bigobj)
 
 add_library(${ModuleName} SHARED 
-    ${SOURCES}  ${HEADERS} ${HELP_SOURCES}  ${HELP_HEADERS}
+    ${SOURCES}  ${HEADERS} ${HELP_SOURCES}  ${HELP_HEADERS} ${CEFPART_SOURCES}  ${CEFPART_HEADERS}
     ${CMAKE_CURRENT_BINARY_DIR}/sciter_resources.h
     "SampleWrapExistingCredentialProvider.def"
     "resources.rc"
