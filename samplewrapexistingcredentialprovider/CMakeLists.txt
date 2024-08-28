@@ -13,7 +13,6 @@ add_compile_definitions(JWT_CLAIM_EXPLICIT=0)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT /Zi")
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF" CACHE STRING "" FORCE)
 
-include_directories( E:/oslib/sciter-js-sdk-main/include )
 
 include_directories("D:/github/cef-project/third_party/cef/cef_binary_127.3.1+g6cbb30e+chromium-127.0.6533.100_windows64")
 include_directories( ../Helpers )
@@ -36,31 +35,10 @@ ADD_DEFINITIONS(-D_UNICODE)
 
 
 
-#ADD_CUSTOM_COMMAND(
-#    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${MESSAGE_SOURCE}.h" "${CMAKE_CURRENT_SOURCE_DIR}/${MESSAGE_SOURCE}.rc"
-#    COMMAND  mc.exe /A "${CMAKE_CURRENT_SOURCE_DIR}/${MESSAGE_SOURCE}.mc" /h  "${CMAKE_CURRENT_SOURCE_DIR}"
-#        /r "${CMAKE_CURRENT_SOURCE_DIR}"
-#    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${MESSAGE_SOURCE}.mc"
-#)
-
-
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/sciter_resources.h
-  COMMAND E:/oslib/sciter-js-sdk-main/bin/windows/packfolder.exe  ${CMAKE_CURRENT_SOURCE_DIR}/ui sciter_resources.h -v "sciter_resources"
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/ui
-  COMMENT "Generating sciter_resources.h"
-  )
-
-# Custom target to ensure the custom command is executed
-add_custom_target(generate_resources ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/sciter_resources.h)
-
-
-
 add_compile_options(-bigobj)
 
 add_library(${ModuleName} SHARED 
     ${SOURCES}  ${HEADERS} ${HELP_SOURCES}  ${HELP_HEADERS} ${CEFPART_SOURCES}  ${CEFPART_HEADERS}
-    ${CMAKE_CURRENT_BINARY_DIR}/sciter_resources.h
     "SampleWrapExistingCredentialProvider.def"
     "resources.rc"
 )
@@ -79,6 +57,9 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
 	"Shlwapi"
 	"Credui"
 	"Secur32"
+  "D:/github/cef-project/third_party/cef/cef_binary_127.3.1+g6cbb30e+chromium-127.0.6533.100_windows64/Debug/libcef.lib"
+  "D:/github/cef-project/third_party/cef/cef_binary_127.3.1+g6cbb30e+chromium-127.0.6533.100_windows64/Debug/cef_sandbox.lib"
+  "D:/github/cef-project/build/libcef_dll_wrapper/Debug/libcef_dll_wrapper.lib"
 )
 
 
