@@ -1,6 +1,6 @@
 [requires]
 nlohmann_json/3.11.3
-quill/3.7.0
+
 
 [generators]
 cmake
