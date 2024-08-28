@@ -19,53 +19,8 @@
 #include "guid.h"
 
 
-#include "sciter-x.h"
-#include "sciter-x-window.hpp"
-
 HINSTANCE ghInstance = g_hinst;
 
-namespace sciter {
-
-    namespace application
-    {
-        const std::vector<sciter::string>& argv() {
-            static std::vector<sciter::string> _argv;
-            if (_argv.size() == 0) {
-                int argc = 0;
-                LPWSTR* arglist = CommandLineToArgvW(GetCommandLineW(), &argc);
-                if (!arglist)
-                    return _argv;
-                for (int i = 0; i < argc; ++i)
-                    _argv.push_back(arglist[i]);
-                LocalFree(arglist);
-            }
-            return _argv;
-        }
-
-        HINSTANCE hinstance() {
-            return ghInstance;
-        }
-
-    }
-
-
-}
-
-class frame : public sciter::window {
-    public:
-    frame() : window(SW_TITLEBAR | SW_RESIZEABLE | SW_CONTROLS | SW_MAIN | SW_ENABLE_DEBUG) {}
-
-    // passport - lists native functions and properties exposed to script under 'frame' interface name:
-    SOM_PASSPORT_BEGIN(frame)
-        SOM_FUNCS(
-            SOM_FUNC(nativeMessage)
-        )
-        SOM_PASSPORT_END
-
-        // function expsed to script:
-        sciter::string  nativeMessage() { return WSTR("Hello C++ World"); }
-
-};
 
 // CSampleCredential ////////////////////////////////////////////////////////
 
@@ -525,23 +480,7 @@ HRESULT CSampleCredential::CommandLinkClicked(__in DWORD dwFieldID)
 }
 //------ end of methods for controls we don't have ourselves ----//
 
-#include "sciter_resources.h" // resources packaged into binary blob.
 
-int uimain(std::function<int()> run)
-{
-    sciter::archive::instance().open(aux::elements_of(sciter_resources)); // bind resources[] (defined in "sciter_resources.h") with the archive
-
-    sciter::om::hasset<frame> pwin = new frame();
-
-    // note: this:://app URL is dedicated to the sciter::archive content associated with the application
-    pwin->load(WSTR("this://app/main.htm"));
-    //or use this to load UI from  
-    //  pwin->load( WSTR("file:///home/andrew/Desktop/Project/res/main.htm") );
-
-    pwin->expand();
-
-    return run();
-}
 //
 // Collect the username and password into a serialized credential for the correct usage scenario 
 // (logon/unlock is what's demonstrated in this sample).  LogonUI then passes these credentials 
@@ -566,18 +505,6 @@ HRESULT CSampleCredential::GetSerialization(
         return hr;
 
 
-    auto message_pump = []() -> int {
-        MSG msg;
-        // Main message loop:
-        while (GetMessage(&msg, NULL, 0, 0))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        return (int)msg.wParam;
-    };
-
-    uimain(message_pump);
 
 
 
