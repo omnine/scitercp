@@ -45,6 +45,9 @@ int APIENTRY cefmain() {
     settings.no_sandbox = true;
 #endif
 
+    settings.chrome_runtime = true;
+//    settings.root_cache_path = "c:\\temp\\testcache";
+
     // SimpleApp implements application-level callbacks for the browser process.
     // It will create the first browser instance in OnContextInitialized() after
     // CEF has initialized.

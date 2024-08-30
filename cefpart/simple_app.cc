@@ -110,14 +110,10 @@ SimpleApp::SimpleApp() = default;
 void SimpleApp::OnContextInitialized() {
   CEF_REQUIRE_UI_THREAD();
 
-  CefRefPtr<CefCommandLine> command_line =
-      CefCommandLine::GetGlobalCommandLine();
-
-
   // Check if Alloy style will be used. Alloy style is always used with the
   // Alloy runtime bootstrap and optional with the Chrome runtime bootstrap.
-  bool use_alloy_style = true;
-  cef_runtime_style_t runtime_style = CEF_RUNTIME_STYLE_DEFAULT;
+  bool use_alloy_style = false;
+  cef_runtime_style_t runtime_style = CEF_RUNTIME_STYLE_CHROME;
 
   if(use_alloy_style)
     runtime_style = CEF_RUNTIME_STYLE_ALLOY;
@@ -138,7 +134,7 @@ void SimpleApp::OnContextInitialized() {
   // `--use-views` to enable).
 
 
-  const bool use_views = true;
+  const bool use_views = false;
   // If using Views create the browser using the Views framework, otherwise
   // create the browser using the native platform framework.
   if (use_views) {
@@ -149,13 +145,6 @@ void SimpleApp::OnContextInitialized() {
 
     // Optionally configure the initial show state.
     cef_show_state_t initial_show_state = CEF_SHOW_STATE_NORMAL;
-    const std::string& show_state_value =
-        command_line->GetSwitchValue("initial-show-state");
-    if (show_state_value == "minimized") {
-      initial_show_state = CEF_SHOW_STATE_MINIMIZED;
-    } else if (show_state_value == "maximized") {
-      initial_show_state = CEF_SHOW_STATE_MAXIMIZED;
-    }
 #if defined(OS_MAC)
     // Hidden show state is only supported on MacOS.
     else if (show_state_value == "hidden") {
