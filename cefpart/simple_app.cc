@@ -11,7 +11,7 @@
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
-#include "tests/cefsimple/simple_handler.h"
+#include "simple_handler.h"
 
 namespace {
 
@@ -113,24 +113,14 @@ void SimpleApp::OnContextInitialized() {
   CefRefPtr<CefCommandLine> command_line =
       CefCommandLine::GetGlobalCommandLine();
 
-#if !defined(DISABLE_ALLOY_BOOTSTRAP)
-  const bool enable_chrome_runtime =
-      !command_line->HasSwitch("disable-chrome-runtime");
-#endif
 
   // Check if Alloy style will be used. Alloy style is always used with the
   // Alloy runtime bootstrap and optional with the Chrome runtime bootstrap.
   bool use_alloy_style = true;
   cef_runtime_style_t runtime_style = CEF_RUNTIME_STYLE_DEFAULT;
-#if !defined(DISABLE_ALLOY_BOOTSTRAP)
-  if (enable_chrome_runtime)
-#endif
-  {
-    use_alloy_style = command_line->HasSwitch("use-alloy-style");
-    if (use_alloy_style) {
-      runtime_style = CEF_RUNTIME_STYLE_ALLOY;
-    }
-  }
+
+  if(use_alloy_style)
+    runtime_style = CEF_RUNTIME_STYLE_ALLOY;
 
   // SimpleHandler implements browser-level callbacks.
   CefRefPtr<SimpleHandler> handler(new SimpleHandler(use_alloy_style));
@@ -140,26 +130,15 @@ void SimpleApp::OnContextInitialized() {
 
   std::string url;
 
-  // Check if a "--url=" value was provided via the command-line. If so, use
-  // that instead of the default URL.
-  url = command_line->GetSwitchValue("url");
-  if (url.empty()) {
-    url = "https://www.google.com";
-  }
 
 //  url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3ede5b24-7594-465f-9ec5-4b83dbd22b3e&response_type=code%20id_token&scope=openid%20profile&response_mode=form_post&nonce=638603568248318546.NmZhMjg2NjgtYWIxNi00YTkxLWE5NmEtODA0ZDI3YWEyMTkzYWMyMTllMGMtNWQ4ZS00YWM5LWIzYmItZGZjYTI3M2Q2Y2M4&ui_locales=en-US&mkt=en-US&client-request-id=907569df-d2cb-4023-8696-0ab7e21939ae&state=y_snrSuhhKnMflHNjAnH3vykiE8XkvoSmy8ZD0G16Xg61ubi4Uxgfn6-a1iyUlb2oTBbigz6AMP1Qfwos51-7UfV3BJjkqYHmHXk-lZSVwrgNmrsPB8nlPA1gpuufrYRoZOr0aWuaWR5U-R0Bs69_jcx-Svu7lpwBsWm04749eimp8b-tz85-dgIVoNbC5eLYEMxsg3-ikIswkc53al8DVh7Ub7g63u0lq7pUJAl8y85dy9Hq0e2rduLj_YMChc4vcE0g6i7_6zFKEjYiHCV0A&x-client-SKU=ID_NET8_0&x-client-ver=7.5.1.0&login_hint=sophie.rock@opensid.net";
   url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3ede5b24-7594-465f-9ec5-4b83dbd22b3e&response_type=code&scope=openid%20profile&response_mode=fragment&code_challenge=5vEtIy2T-G65yXHc8g5zcJDQXICBzZMrtERq0zhx7hM&code_challenge_method=S256&&login_hint=sophie.rock@opensid.net";
   // Views is enabled by default with the Chrome bootstrap (add `--use-native`
   // to disable). Views is disabled by default with the Alloy bootstrap (add
   // `--use-views` to enable).
-#if !defined(DISABLE_ALLOY_BOOTSTRAP)
-  const bool use_views =
-      (enable_chrome_runtime && !command_line->HasSwitch("use-native")) ||
-      (!enable_chrome_runtime && command_line->HasSwitch("use-views"));
-#else
-  const bool use_views = !command_line->HasSwitch("use-native");
-#endif
 
+
+  const bool use_views = true;
   // If using Views create the browser using the Views framework, otherwise
   // create the browser using the native platform framework.
   if (use_views) {
