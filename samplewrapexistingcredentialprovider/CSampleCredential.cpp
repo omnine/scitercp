@@ -22,21 +22,34 @@
 
 #include "include/cef_command_line.h"
 #include "include/cef_sandbox_win.h"
-#include "tests/cefsimple/simple_app.h"
+#include "../cefpart/simple_app.h"
 
 HINSTANCE ghInstance = g_hinst;
+HWND g_hWnd;
 
-
-int APIENTRY cefmain() {
+int cefmain(HWND hWnd) {
     int exit_code;
+    g_hWnd = hWnd;
 
 
     void* sandbox_info = nullptr;
-
+#if defined(CEF_USE_SANDBOX)
+    // Manage the life span of the sandbox information object. This is necessary
+    // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
+    CefScopedSandboxInfo scoped_sandbox;
+    sandbox_info = scoped_sandbox.sandbox_info();
+#endif
 
     // Provide CEF with command-line arguments.
     CefMainArgs main_args(ghInstance);
-
+    // CEF applications have multiple sub-processes (render, GPU, etc) that share
+    // the same executable. This function checks the command-line and, if this is
+    // a sub-process, executes the appropriate logic.
+    exit_code = CefExecuteProcess(main_args, nullptr, sandbox_info);
+    if (exit_code >= 0) {
+        // The sub-process has completed so return here.
+        return exit_code;
+    }
 
     // Specify CEF global settings here.
     CefSettings settings;
@@ -46,12 +59,20 @@ int APIENTRY cefmain() {
 #endif
 
     settings.chrome_runtime = true;
-//    settings.root_cache_path = "c:\\temp\\testcache";
+
+    // Configure the root cache path
+    CefString(&settings.root_cache_path).FromASCII("c:\\temp\\testcache");
+    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\testcache");
+
+    settings.command_line_args_disabled = false;
+    CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+    command_line->AppendSwitch("disable-gpu");
+    command_line->AppendSwitch("disable-software-rasterizer");
 
     // SimpleApp implements application-level callbacks for the browser process.
     // It will create the first browser instance in OnContextInitialized() after
     // CEF has initialized.
-    CefRefPtr<SimpleApp> app(new SimpleApp);
+    CefRefPtr<SimpleApp> app(new SimpleApp());
 
     // Initialize the CEF browser process. May return false if initialization
     // fails or if early exit is desired (for example, due to process singleton
@@ -82,6 +103,7 @@ CSampleCredential::CSampleCredential():
     _cRef(1)
 {
     DllAddRef();
+    _hWnd = NULL;
 
     ZeroMemory(_rgCredProvFieldDescriptors, sizeof(_rgCredProvFieldDescriptors));
     ZeroMemory(_rgFieldStatePairs, sizeof(_rgFieldStatePairs));
@@ -170,6 +192,7 @@ HRESULT CSampleCredential::Advise(
     // to ensure that the weak reference held by the CWrappedCredentialEvents is valid.
     _pCredProvCredentialEvents = pcpce;
     _pCredProvCredentialEvents->AddRef();
+    _pCredProvCredentialEvents->OnCreatingWindow(&_hWnd);
 
     _pWrappedCredentialEvents = new CWrappedCredentialEvents();
     
@@ -555,7 +578,7 @@ HRESULT CSampleCredential::GetSerialization(
         return hr;
 
 
-    cefmain();
+    cefmain(NULL);  // _hWnd
 
 
     return hr;

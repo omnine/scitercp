@@ -13,6 +13,7 @@
 #include "include/wrapper/cef_helpers.h"
 #include "simple_handler.h"
 
+extern HWND g_hWnd;
 namespace {
 
 // When using the Views framework this object provides the delegate
@@ -162,7 +163,7 @@ void SimpleApp::OnContextInitialized() {
 #if defined(OS_WIN)
     // On Windows we need to specify certain flags that will be passed to
     // CreateWindowEx().
-    window_info.SetAsPopup(nullptr, "cefsimple");
+    window_info.SetAsPopup(g_hWnd, "cefsimple");
 #endif
 
     // Alloy runtime style will create a basic native window. Chrome runtime
@@ -171,7 +172,7 @@ void SimpleApp::OnContextInitialized() {
 
     // Create the first browser window.
     CefBrowserHost::CreateBrowser(window_info, handler, url, browser_settings,
-                                  nullptr, nullptr);
+        nullptr, nullptr);
   }
 }
 

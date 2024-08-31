@@ -97,6 +97,7 @@ class CSampleCredential : public ICredentialProviderCredential
     void                                  _CleanupEvents(); 
 
   private:
+    HWND _hWnd;
     LONG                                  _cRef;
     CREDENTIAL_PROVIDER_FIELD_DESCRIPTOR  _rgCredProvFieldDescriptors[SFI_NUM_FIELDS];  // An array holding the type 
                                                                                         // and name of each field in 

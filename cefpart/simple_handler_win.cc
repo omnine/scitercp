@@ -9,6 +9,8 @@
 #include <string>
 
 #include "include/cef_browser.h"
+#include "include/base/cef_logging.h"
+
 #include <iostream>
 
 void SimpleHandler::PlatformTitleChange(CefRefPtr<CefBrowser> browser,
@@ -106,6 +108,7 @@ void SimpleHandler::OnResourceLoadComplete(CefRefPtr<CefBrowser> browser,
                                         URLRequestStatus status,
                                         int64_t received_content_length)
 {
+    /*
         std::string url = request->GetURL();
         std::string target_url = "https://login.microsoftonline.com/common/GetCredentialType";
         if (url.find(target_url) != std::string::npos) { // Replace with your API URL
@@ -125,7 +128,11 @@ void SimpleHandler::OnResourceLoadComplete(CefRefPtr<CefBrowser> browser,
             // Execute the script
             frame->ExecuteJavaScript(script, frame->GetURL(), 0);
         }
-    }
+    
+    
+    */
+
+}
 
 bool SimpleHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                            CefRefPtr<CefFrame> frame,
@@ -133,6 +140,7 @@ bool SimpleHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                            bool user_gesture,
                                            bool is_redirect) {
       std::string url = request->GetURL();
+    LOG(INFO) << "Current URL: " << url;
 
       if (url.find("ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e") != std::string::npos) {
 /*
