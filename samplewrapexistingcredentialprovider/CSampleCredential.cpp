@@ -33,19 +33,26 @@ int cefmain(HWND hWnd) {
 
 
     void* sandbox_info = nullptr;
-#if defined(CEF_USE_SANDBOX)
+
+//#if defined(CEF_USE_SANDBOX)
     // Manage the life span of the sandbox information object. This is necessary
     // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
     CefScopedSandboxInfo scoped_sandbox;
     sandbox_info = scoped_sandbox.sandbox_info();
-#endif
+//#endif
 
     // Provide CEF with command-line arguments.
     CefMainArgs main_args(ghInstance);
+
+    // SimpleApp implements application-level callbacks for the browser process.
+    // It will create the first browser instance in OnContextInitialized() after
+    // CEF has initialized.
+    CefRefPtr<SimpleApp> app(new SimpleApp());
+
     // CEF applications have multiple sub-processes (render, GPU, etc) that share
     // the same executable. This function checks the command-line and, if this is
     // a sub-process, executes the appropriate logic.
-    exit_code = CefExecuteProcess(main_args, nullptr, sandbox_info);
+    exit_code = CefExecuteProcess(main_args, app, sandbox_info);
     if (exit_code >= 0) {
         // The sub-process has completed so return here.
         return exit_code;
@@ -54,25 +61,30 @@ int cefmain(HWND hWnd) {
     // Specify CEF global settings here.
     CefSettings settings;
 
-#if !defined(CEF_USE_SANDBOX)
-    settings.no_sandbox = true;
-#endif
+//#if !defined(CEF_USE_SANDBOX)
+    settings.no_sandbox = false;
+//#endif
 
     settings.chrome_runtime = true;
+    settings.log_severity = LOGSEVERITY_DEBUG;
 
     // Configure the root cache path
     CefString(&settings.root_cache_path).FromASCII("c:\\temp\\testcache");
-    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\testcache");
+    CefString(&settings.cache_path).FromASCII("c:\\temp\\testcache");
+    CefString(&settings.log_file).FromASCII("c:\\temp\\testcache\\debug.log");
+    
+    
+//    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\testcache");
 
-    settings.command_line_args_disabled = false;
+    settings.command_line_args_disabled = true;
     CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
     command_line->AppendSwitch("disable-gpu");
     command_line->AppendSwitch("disable-software-rasterizer");
+    command_line->AppendSwitch("disable-gpu-compositing");
 
-    // SimpleApp implements application-level callbacks for the browser process.
-    // It will create the first browser instance in OnContextInitialized() after
-    // CEF has initialized.
-    CefRefPtr<SimpleApp> app(new SimpleApp());
+    
+
+
 
     // Initialize the CEF browser process. May return false if initialization
     // fails or if early exit is desired (for example, due to process singleton

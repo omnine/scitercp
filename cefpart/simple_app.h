@@ -17,6 +17,10 @@ class SimpleApp : public CefApp, public CefBrowserProcessHandler {
     return this;
   }
 
+  void SimpleApp::OnBeforeCommandLineProcessing(
+    const CefString& process_type,
+    CefRefPtr<CefCommandLine> command_line) override;
+
   // CefBrowserProcessHandler methods:
   void OnContextInitialized() override;
   CefRefPtr<CefClient> GetDefaultClient() override;

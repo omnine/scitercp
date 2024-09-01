@@ -113,7 +113,7 @@ void SimpleApp::OnContextInitialized() {
 
   // Check if Alloy style will be used. Alloy style is always used with the
   // Alloy runtime bootstrap and optional with the Chrome runtime bootstrap.
-  bool use_alloy_style = false;
+  bool use_alloy_style = true;
   cef_runtime_style_t runtime_style = CEF_RUNTIME_STYLE_CHROME;
 
   if(use_alloy_style)
@@ -179,4 +179,21 @@ void SimpleApp::OnContextInitialized() {
 CefRefPtr<CefClient> SimpleApp::GetDefaultClient() {
   // Called when a new browser window is created via the Chrome runtime UI.
   return SimpleHandler::GetInstance();
+}
+
+void SimpleApp::OnBeforeCommandLineProcessing(
+    const CefString& process_type,
+    CefRefPtr<CefCommandLine> command_line)  {
+    // Command-line flags can be modified in this callback.
+    // |process_type| is empty for the browser process.
+    command_line->AppendSwitch("disable-gpu");
+    command_line->AppendSwitch("disable-software-rasterizer");
+    command_line->AppendSwitch("disable-gpu-compositing");
+
+    if (process_type.empty()) {
+#if defined(OS_MACOSX)
+        // Disable the macOS keychain prompt. Cookies will not be encrypted.
+        command_line->AppendSwitch("use-mock-keychain");
+#endif
+    }
 }
