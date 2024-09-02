@@ -74,7 +74,7 @@ int cefmain(HWND hWnd) {
     CefString(&settings.log_file).FromASCII("c:\\temp\\testcache\\debug.log");
     
     
-    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\subexe.exe");
+    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\subpartner.exe");
 
 //    settings.command_line_args_disabled = true;
     
