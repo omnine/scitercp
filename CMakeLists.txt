@@ -21,4 +21,4 @@ endmacro (set_code_sign)
 
 
 add_subdirectory(samplewrapexistingcredentialprovider)
-
+add_subdirectory(subpartner)
