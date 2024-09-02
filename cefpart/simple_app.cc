@@ -135,7 +135,7 @@ void SimpleApp::OnContextInitialized() {
   // `--use-views` to enable).
 
 
-  const bool use_views = false;
+  const bool use_views = true;
   // If using Views create the browser using the Views framework, otherwise
   // create the browser using the native platform framework.
   if (use_views) {

@@ -34,12 +34,12 @@ int cefmain(HWND hWnd) {
 
     void* sandbox_info = nullptr;
 
-//#if defined(CEF_USE_SANDBOX)
+#if defined(CEF_USE_SANDBOX)
     // Manage the life span of the sandbox information object. This is necessary
     // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
     CefScopedSandboxInfo scoped_sandbox;
     sandbox_info = scoped_sandbox.sandbox_info();
-//#endif
+#endif
 
     // Provide CEF with command-line arguments.
     CefMainArgs main_args(ghInstance);
@@ -61,11 +61,11 @@ int cefmain(HWND hWnd) {
     // Specify CEF global settings here.
     CefSettings settings;
 
-//#if !defined(CEF_USE_SANDBOX)
+#if !defined(CEF_USE_SANDBOX)
     settings.no_sandbox = false;
-//#endif
+#endif
 
-    settings.chrome_runtime = true;
+    settings.chrome_runtime = false;
     settings.log_severity = LOGSEVERITY_DEBUG;
 
     // Configure the root cache path
@@ -74,16 +74,15 @@ int cefmain(HWND hWnd) {
     CefString(&settings.log_file).FromASCII("c:\\temp\\testcache\\debug.log");
     
     
-//    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\testcache");
+    CefString(&settings.browser_subprocess_path).FromASCII("c:\\temp\\subexe.exe");
 
-    settings.command_line_args_disabled = true;
-    CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+//    settings.command_line_args_disabled = true;
+    
+     CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
     command_line->AppendSwitch("disable-gpu");
     command_line->AppendSwitch("disable-software-rasterizer");
-    command_line->AppendSwitch("disable-gpu-compositing");
-
+    command_line->AppendSwitch("disable-gpu-compositing");   
     
-
 
 
     // Initialize the CEF browser process. May return false if initialization
