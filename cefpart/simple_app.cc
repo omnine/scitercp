@@ -27,6 +27,30 @@ class SimpleWindowDelegate : public CefWindowDelegate {
         runtime_style_(runtime_style),
         initial_show_state_(initial_show_state) {}
 
+
+
+
+    void CenterCefWindow(CefRefPtr<CefWindow> window) {
+        // Get the screen width and height
+        int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+        int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+        // Get the size of the current window
+        CefSize windowSize = window->GetSize();
+
+        // Calculate the centered position
+        int x = (screenWidth - windowSize.width) / 2;
+        int y = (screenHeight - windowSize.height) / 2;
+
+        CefRect bounds;
+        bounds.Set(x, y, windowSize.width, windowSize.height);
+
+        // Set the position of the CefWindow
+        window->SetBounds(bounds);
+    }
+
+
+
   void OnWindowCreated(CefRefPtr<CefWindow> window) override {
     // Add the browser view and show the window.
     window->AddChildView(browser_view_);
@@ -34,6 +58,8 @@ class SimpleWindowDelegate : public CefWindowDelegate {
     if (initial_show_state_ != CEF_SHOW_STATE_HIDDEN) {
       window->Show();
     }
+
+    CenterCefWindow(window);
 
     if (initial_show_state_ != CEF_SHOW_STATE_MINIMIZED &&
         initial_show_state_ != CEF_SHOW_STATE_HIDDEN) {

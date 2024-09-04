@@ -15,3 +15,8 @@ Contents of this sample's subfolders:
 Helpers: common files for the other subfolders.
 
 SampleWrapExistingCredentialProvider: demonstrates how a credential provider can "wrap" or contain another credential provider in order to add functionality.
+
+
+[OAuth2 PKCE Flow](https://developer.constantcontact.com/api_guide/pkce_flow.html)  
+[Proof Key for Code Exchange (RFC 7636)](https://www.authlete.com/developers/pkce/)  
+[Enable login using the Authorization Code flow and PKCE for public clients](https://is.docs.wso2.com/en/6.1.0/guides/login/oidc-auth-code-pkce/)
