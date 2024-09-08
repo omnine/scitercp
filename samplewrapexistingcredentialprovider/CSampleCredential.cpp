@@ -24,6 +24,8 @@
 #include "include/cef_sandbox_win.h"
 #include "../cefpart/simple_app.h"
 
+#include "../helpers/pkce.h"
+
 extern PKCE g_pkce;
 
 HINSTANCE ghInstance = g_hinst;
@@ -32,8 +34,54 @@ HWND g_hWnd;
 int cefmain(HWND hWnd) {
     int exit_code;
     g_hWnd = hWnd;
+        CHAR szPath[MAX_PATH] = {0};
+        DWORD dwLen = GetModuleFileNameA(ghInstance, szPath, MAX_PATH);
+        szPath[dwLen] = NULL;
+        CHAR* pName = strrchr(szPath, '\\');
+        if (pName != NULL) {
+            pName++;
+            strcpy(pName, "npsext_authn.log");
 
-    g_pkce.readSettings("c:\\temp\\config.json");
+/*
+            // Start the logging backend thread
+            quill::start();
+
+            // Get a handler to the file
+            // The first time this function is called a file handler is created for this filename.
+            // Calling the function with the same filename will return the existing handler
+            std::shared_ptr<quill::Handler> file_handler =
+                quill::file_handler(szPath,
+                    []()
+            {
+                quill::FileHandlerConfig cfg;
+                cfg.set_open_mode('a');
+                return cfg;
+            }());
+*/
+
+            // Create a logger using this handler
+ //           logger = quill::create_logger("logger", { file_handler });
+
+            strcpy(pName, "config.json");
+            g_pkce.readSettings(szPath);
+            /*
+            if(log_level != "Info"){
+                quill::LogLevel level = quill::loglevel_from_string(log_level);
+                file_handler->set_log_level(level);
+                logger->set_log_level(level);
+                LOG_INFO(logger, "log_level is set to {}", log_level);
+            }
+            else
+            {
+                LOG_INFO(logger, "log_level is set to Info");
+            }            
+            
+            */
+
+
+                  
+        }
+
 
     void* sandbox_info = nullptr;
 

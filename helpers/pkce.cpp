@@ -2,9 +2,17 @@
 
 #include <string>
 #include <random>
+#include <fstream>
+
+#include "pkce.h"
+#include <shlwapi.h>
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 #include <openssl/sha.h>
 #include "base64.h"
+
 
 PKCE g_pkce;
 std::string PKCE::random_string(std::size_t length)
@@ -83,14 +91,6 @@ int PKCE::readSettings(const char *szFilePath)
         token_url = config["token_url"];
     }    
 
-    if (config.contains("ttl"))
-    {
-        ttlPeriod = config["ttl"];
-    }
-    if (config.contains("read_timeout"))
-    {
-        read_timeout = config["read_timeout"];
-    }
 
     if (config.contains("bypass"))
     {

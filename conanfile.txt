@@ -1,4 +1,6 @@
 [requires]
+cpp-httplib/0.17.1
+quill/6.1.0
 openssl/3.3.1
 nlohmann_json/3.11.3
 jwt-cpp/0.7.0

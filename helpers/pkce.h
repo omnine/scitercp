@@ -15,6 +15,8 @@ public:
         token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
         client_id = "d3590ed6-52b3-4102-aeff-aad2292ab01c";
         native_redirect_url = "ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e";
+        bypass = false;
+        log_level = 0;
     }
 
     // Destructor
@@ -47,6 +49,8 @@ public:
 private:
     // Private members
     int myVariable;
+    bool bypass;
+    int log_level;
 
     std::string code_verifier;
 };

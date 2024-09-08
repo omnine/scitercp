@@ -3,8 +3,9 @@ project(samplewrapexistingcredentialprovider)
 find_package(OPENSSL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(jwt-cpp REQUIRED)
+find_package(httplib REQUIRED)
 
-set(CONAN_LIBS nlohmann_json::nlohmann_json openssl::openssl jwt-cpp::jwt-cpp)
+set(CONAN_LIBS nlohmann_json::nlohmann_json openssl::openssl jwt-cpp::jwt-cpp httplib::httplib)
 
 
 
