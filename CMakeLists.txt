@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 #cmake_policy(SET CMP0091 NEW)
 project(sciter-cp VERSION 6.7.0)
+
+find_package(OPENSSL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(jwt-cpp REQUIRED)
 
 #include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 #conan_basic_setup()

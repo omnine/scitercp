@@ -48,7 +48,7 @@ public:
         SHA256_Update(&sha256, code_verifier.c_str(), code_verifier.size());
         SHA256_Final(hash, &sha256);
 
-        return base64_encode(sha256, SHA256_DIGEST_LENGTH, true);
+        return base64_encode(hash, SHA256_DIGEST_LENGTH, true);
 
     }
 

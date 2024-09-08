@@ -1,5 +1,13 @@
 project(samplewrapexistingcredentialprovider)
 
+find_package(OPENSSL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(jwt-cpp REQUIRED)
+
+set(CONAN_LIBS nlohmann_json::nlohmann_json openssl::openssl jwt-cpp::jwt-cpp)
+
+
+
 set(ModuleName samplewrapexistingcredentialprovider)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -66,7 +74,7 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
 
 
 #conan_target_link_libraries(${ModuleName})
-target_link_libraries(${ModuleName} "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
+target_link_libraries(${ModuleName} ${CONAN_LIBS} "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
 set_target_properties(${ModuleName} PROPERTIES
  LINK_FLAGS "/ignore:4099"
 )
