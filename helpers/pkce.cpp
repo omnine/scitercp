@@ -6,55 +6,104 @@
 #include <openssl/sha.h>
 #include "base64.h"
 
-class PKCE {
-public:
-    // Constructor
-    PKCE() {
-        // Initialize class members here
-    }
+PKCE g_pkce;
+std::string PKCE::random_string(std::size_t length)
+{
+    const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    // Destructor
-    ~PKCE() {
-        // Clean up resources here
-    }
+    std::random_device random_device;
+    std::mt19937 generator(random_device());
+    std::uniform_int_distribution<> distribution(0, characters.size() - 1);
 
-    // Member function
-    std::string random_string(std::size_t length)
+    std::string random_string;
+
+    for (std::size_t i = 0; i < length; ++i)
     {
-        const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-        std::random_device random_device;
-        std::mt19937 generator(random_device());
-        std::uniform_int_distribution<> distribution(0, characters.size() - 1);
-
-        std::string random_string;
-
-        for (std::size_t i = 0; i < length; ++i)
-        {
-            random_string += characters[distribution(generator)];
-        }
-
-        return random_string;
+        random_string += characters[distribution(generator)];
     }
 
-    void generate_code_verifier() {
-        code_verifier = random_string(64);
+    return random_string;
+}
+
+void PKCE::generate_code_verifier() {
+    code_verifier = random_string(64);
+}
+
+std::string PKCE::generate_code_challenge() {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, code_verifier.c_str(), code_verifier.size());
+    SHA256_Final(hash, &sha256);
+
+    return base64_encode(hash, SHA256_DIGEST_LENGTH, true);
+
+}
+
+int PKCE::readSettings(const char *szFilePath)
+{
+
+    if (!PathFileExistsA(szFilePath))
+        return 1;
+
+    std::ifstream f(szFilePath);
+
+    json config;
+    try
+    {
+        config = json::parse(f);
+    }
+    catch (json::parse_error& ex)
+    {
+//        LOG_WARNING(logger, "json parse the file {} got the error {}",szFilePath, ex.what());
+        return 3;
     }
 
-    std::string generate_code_challenge() {
-        unsigned char hash[SHA256_DIGEST_LENGTH];
-        SHA256_CTX sha256;
-        SHA256_Init(&sha256);
-        SHA256_Update(&sha256, code_verifier.c_str(), code_verifier.size());
-        SHA256_Final(hash, &sha256);
+    if (config.is_null())
+        return 2;
 
-        return base64_encode(hash, SHA256_DIGEST_LENGTH, true);
-
+    // find an entry
+    if (config.contains("authorize_url"))
+    {
+        authorize_url = config["authorize_url"];
     }
 
-private:
-    // Private members
-    int myVariable;
+    if (config.contains("client_id"))
+    {
+        client_id = config["client_id"];
+    }
 
-    std::string code_verifier;
-};
+    if (config.contains("native_redirect_url"))
+    {
+        native_redirect_url = config["native_redirect_url"];
+    }
+
+    if (config.contains("token_url"))
+    {
+        token_url = config["token_url"];
+    }    
+
+    if (config.contains("ttl"))
+    {
+        ttlPeriod = config["ttl"];
+    }
+    if (config.contains("read_timeout"))
+    {
+        read_timeout = config["read_timeout"];
+    }
+
+    if (config.contains("bypass"))
+    {
+        bypass = config["bypass"];
+    }    
+
+    if (config.contains("log_level"))
+    {
+        log_level = config["log_level"];
+    }
+
+//    LOG_INFO(logger, "successfully read the settings from {}", szFilePath);
+
+    return 0;
+}
+

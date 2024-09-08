@@ -24,6 +24,8 @@
 #include "include/cef_sandbox_win.h"
 #include "../cefpart/simple_app.h"
 
+extern PKCE g_pkce;
+
 HINSTANCE ghInstance = g_hinst;
 HWND g_hWnd;
 
@@ -31,6 +33,7 @@ int cefmain(HWND hWnd) {
     int exit_code;
     g_hWnd = hWnd;
 
+    g_pkce.readSettings("c:\\temp\\config.json");
 
     void* sandbox_info = nullptr;
 
@@ -587,7 +590,8 @@ HRESULT CSampleCredential::GetSerialization(
 
     if (hr != S_OK)
         return hr;
-
+    // should get from pcpcs
+    g_pkce.login_name = "sophie.rock@opensid.net";
 
     cefmain(NULL);  // _hWnd
 

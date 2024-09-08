@@ -151,6 +151,10 @@ ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e#co
 
         browser->GetHost()->CloseBrowser(true);
 
+        //Parse the URL to get the code, then call token endpoint to get the token via httplib
+
+        Finally use jwt-cpp to verify the token and get the claims.
+
         return true;
       }
       return false;
