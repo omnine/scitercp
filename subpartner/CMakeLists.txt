@@ -39,7 +39,7 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
 
 
 
-conan_target_link_libraries(${PROJECT_NAME})
+#conan_target_link_libraries(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
  LINK_FLAGS "/ignore:4099"

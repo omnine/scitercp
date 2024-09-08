@@ -8,7 +8,7 @@ buildx64:
 .PHONY:buildx64debug
 buildx64debug:
 	-mkdir ..\buildx64debug
-	cd ..\buildx64debug && conan install .. -s "compiler=Visual Studio" -s arch=x86_64 -s build_type=Debug -s compiler.runtime=MTd -s compiler.version=17 -s compiler.toolset=v143 --build=missing
+	cd ..\buildx64debug && conan install .. -s "compiler=msvc" -s arch=x86_64 -s build_type=Debug -s compiler.runtime=static -s compiler.version=194 -s compiler.toolset=v143 --build=missing
 	cmake -S .. -B ../buildx64debug -G "Visual Studio 17 2022" -A x64 -DCMAKE_GENERATOR_TOOLSET=v143
 	cmake --build ../buildx64debug --config Debug
 
