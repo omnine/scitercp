@@ -4,8 +4,9 @@ find_package(OPENSSL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(jwt-cpp REQUIRED)
 find_package(httplib REQUIRED)
+find_package(quill REQUIRED)
 
-set(CONAN_LIBS nlohmann_json::nlohmann_json openssl::openssl jwt-cpp::jwt-cpp httplib::httplib)
+set(CONAN_LIBS nlohmann_json::nlohmann_json openssl::openssl jwt-cpp::jwt-cpp httplib::httplib quill::quill)
 
 
 

@@ -5,7 +5,7 @@ project(sciter-cp VERSION 6.7.0)
 find_package(OPENSSL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(jwt-cpp REQUIRED)
-
+find_package(quill REQUIRED)
 
 #include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 #conan_basic_setup()

@@ -26,48 +26,51 @@
 
 #include "../helpers/pkce.h"
 
+
+#include "quill/Backend.h"
+#include "quill/Frontend.h"
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
+#include "quill/sinks/FileSink.h"
+#include <string_view>
+
 extern PKCE g_pkce;
 
 HINSTANCE ghInstance = g_hinst;
 HWND g_hWnd;
+quill::Logger* logger = nullptr; // how to delete it?
 
 int cefmain(HWND hWnd) {
     int exit_code;
     g_hWnd = hWnd;
+        std::string log_level = "Info";
         CHAR szPath[MAX_PATH] = {0};
         DWORD dwLen = GetModuleFileNameA(ghInstance, szPath, MAX_PATH);
         szPath[dwLen] = NULL;
         CHAR* pName = strrchr(szPath, '\\');
         if (pName != NULL) {
             pName++;
-            strcpy(pName, "npsext_authn.log");
+            strcpy(pName, "dscal.log"); // deepnet security computer azure logon
 
-/*
+
             // Start the logging backend thread
-            quill::start();
+            quill::Backend::start();
 
-            // Get a handler to the file
-            // The first time this function is called a file handler is created for this filename.
-            // Calling the function with the same filename will return the existing handler
-            std::shared_ptr<quill::Handler> file_handler =
-                quill::file_handler(szPath,
-                    []()
-            {
-                quill::FileHandlerConfig cfg;
-                cfg.set_open_mode('a');
-                return cfg;
-            }());
-*/
+            // Get or create a handler to the file - Write to a different file
+            auto file_sink = quill::Frontend::create_or_get_sink<quill::FileSink>(
+                szPath);
 
-            // Create a logger using this handler
- //           logger = quill::create_logger("logger", { file_handler });
+            logger = quill::Frontend::create_or_get_logger("root", std::move(file_sink));
+
+
+
 
             strcpy(pName, "config.json");
             g_pkce.readSettings(szPath);
-            /*
+            log_level = g_pkce.get_log_level();
+            
             if(log_level != "Info"){
                 quill::LogLevel level = quill::loglevel_from_string(log_level);
-                file_handler->set_log_level(level);
                 logger->set_log_level(level);
                 LOG_INFO(logger, "log_level is set to {}", log_level);
             }
@@ -75,11 +78,7 @@ int cefmain(HWND hWnd) {
             {
                 LOG_INFO(logger, "log_level is set to Info");
             }            
-            
-            */
-
-
-                  
+                
         }
 
 

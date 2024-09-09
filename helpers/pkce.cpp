@@ -71,9 +71,9 @@ int PKCE::readSettings(const char *szFilePath)
         return 2;
 
     // find an entry
-    if (config.contains("authorize_url"))
+    if (config.contains("authorization_endpoint"))
     {
-        authorize_url = config["authorize_url"];
+        authorization_endpoint = config["authorization_endpoint"];
     }
 
     if (config.contains("client_id"))
