@@ -12,11 +12,11 @@ public:
     PKCE() {
         // Initialize class members here
         authorization_endpoint = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
-        token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+        token_endpoint = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
         client_id = "d3590ed6-52b3-4102-aeff-aad2292ab01c";
         native_redirect_url = "ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e";
         bypass = false;
-        log_level = 0;
+        log_level = "info";
     }
 
     // Destructor
@@ -36,7 +36,7 @@ public:
     std::string login_name;
 
     std::string authorization_endpoint;
-    std::string token_url;
+    std::string token_endpoint;
     std::string client_id;
     std::string native_redirect_url;
     std::string get_authorization_endpoint(){
@@ -46,15 +46,14 @@ public:
         return client_id;
     }
 
-    int get_log_level(){
+    std::string get_log_level(){
         return log_level;
     }
 
 private:
-    // Private members
-    int myVariable;
+
     bool bypass;
-    int log_level;
+    std::string log_level;
 
     std::string code_verifier;
 };

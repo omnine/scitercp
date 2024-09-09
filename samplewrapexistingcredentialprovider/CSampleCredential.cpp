@@ -43,7 +43,7 @@ quill::Logger* logger = nullptr; // how to delete it?
 int cefmain(HWND hWnd) {
     int exit_code;
     g_hWnd = hWnd;
-        std::string log_level = "Info";
+        std::string log_level = "info";
         CHAR szPath[MAX_PATH] = {0};
         DWORD dwLen = GetModuleFileNameA(ghInstance, szPath, MAX_PATH);
         szPath[dwLen] = NULL;
@@ -69,7 +69,7 @@ int cefmain(HWND hWnd) {
             g_pkce.readSettings(szPath);
             log_level = g_pkce.get_log_level();
             
-            if(log_level != "Info"){
+            if(log_level != "info"){
                 quill::LogLevel level = quill::loglevel_from_string(log_level);
                 logger->set_log_level(level);
                 LOG_INFO(logger, "log_level is set to {}", log_level);

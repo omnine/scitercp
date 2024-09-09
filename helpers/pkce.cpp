@@ -86,9 +86,9 @@ int PKCE::readSettings(const char *szFilePath)
         native_redirect_url = config["native_redirect_url"];
     }
 
-    if (config.contains("token_url"))
+    if (config.contains("token_endpoint"))
     {
-        token_url = config["token_url"];
+        token_endpoint = config["token_endpoint"];
     }    
 
 

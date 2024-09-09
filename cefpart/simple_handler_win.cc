@@ -11,6 +11,10 @@
 #include "include/cef_browser.h"
 #include "include/base/cef_logging.h"
 
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
+extern quill::Logger* logger;
+
 #include <iostream>
 
 void SimpleHandler::PlatformTitleChange(CefRefPtr<CefBrowser> browser,
@@ -147,12 +151,14 @@ bool SimpleHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
 ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e#code=0.AUgA-dqohZwpLUalJ6z5FugmWCRb3j6UdV9GnsVLg9vSKz4BAAA.AgABBAIAAAApTwJmzXqdR4BN2miheQMYAgDs_wUA9P97UgT7-sFWD7SBwZFKNeIo22lfBPkYE4C8PCYZT5ifd5q4x_3-gd4WZcwEGTDuetxFvTtLObaPpr7euSsr3Al5BoHWUyrnXzwFJ_9NwOpf8pzb-nklzMb0F_Qq4B-QDEIMfYCpCj7PpnI5HWC2Pyk_LZUphJAcK8JDJdQhDDuL7tDWvMkJEEp6z2FbShWXmRa5F5vx3l0DDJw2Pj-bdi9ftHXkE2-GmUgJp1tdj_663UGhQ1Xwv8J7-A_4Loeu_slp3XuxASVUu19d9P-2cY5PKV9vnaNytQGHtU2QjFSIxCFY78ICvzqIjtKu3paTQvdExiKHmaQiceCaYvbRx7mGwxjlA254I0WsGIWmTK1mDHqLZ20_SZJhuPtPMVLbGfE7nmSddtCWTHCDycWFcBZ4_wYugcPTGut8rVQ9fkw36JWSTS-vYrMs1Z3gsatboSPQ-_2Guov2n6DB3ztRWjQKrATeZztE8IgYWucsspsXBZWnil3gvZXcJybJMT6iy40Z37PJj8zbPQ_BdP4Yhg-uR4EB7i0M-nMkj69Y9V8XGyrkwjZhFZGd7w8zV7xmtISr_AKgWP59gNxaiixSwPf6gxFR53KPHjO1kYaHjV4XOxcnMSDSbMw1gpHkrWiQGsJqwXZZGTvpyeM9mzQqB5O_N0QmD1xyOhBfE78JCsHpRi4rsjGvCxV1J-hVNG4LxXyeuSBj9cxK3iBsamuEzErebJNTWcwNoQ-LJY0bdiP81MZXh6GeVaqyQY79_WKvFiP2wqhtzUWUUZGJeNI&session_state=6c2075b1-5fe4-4176-ad07-0e6b29e2ecac
     so we can get code from the url
 */
-        std::cout << "current url: " << url << std::endl;
+          // should we use cef logger?
+        LOG_INFO(logger, "current url: {}", url);
 
         browser->GetHost()->CloseBrowser(true);
 
         //Parse the URL to get the code, then call token endpoint to get the token via httplib
-
+        // https://massivescale.com/microsoft-v2-endpoint-primer/
+        // 
         //Finally use jwt-cpp to verify the token and get the claims.
 
         return true;

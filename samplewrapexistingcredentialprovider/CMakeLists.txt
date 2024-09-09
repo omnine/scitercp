@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options(/wd4267)
 
-add_compile_definitions(DASAUTHEXTENSION_EXPORTS)
+add_compile_definitions(DASAUTHEXTENSION_EXPORTS NOMINMAX)
 add_compile_definitions(JWT_CLAIM_EXPLICIT=0)
 add_compile_definitions(_HAS_ITERATOR_DEBUGGING=0)
 #Generate pdb files for release build
