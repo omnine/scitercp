@@ -43,9 +43,12 @@ std::string PKCE::generate_code_challenge() {
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, code_verifier.c_str(), code_verifier.size());
     SHA256_Final(hash, &sha256);
+    std::string full_encoded = base64_encode(hash, SHA256_DIGEST_LENGTH, true);
 
-    return base64_encode(hash, SHA256_DIGEST_LENGTH, true);
-
+    // remove padding characters
+    std::string result = full_encoded;
+    result.erase(result.find_last_not_of('.') + 1);
+    return result;
 }
 
 int PKCE::readSettings(const char *szFilePath)
