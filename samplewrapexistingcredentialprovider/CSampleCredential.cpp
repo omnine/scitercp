@@ -50,7 +50,7 @@ std::string WStringToUtf8(const std::wstring& wstr) {
     return conv.to_bytes(wstr);
 }
 
-bool GetUsernameFromSerialization(const CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION& serialization, std::wstring& username) {
+bool GetUsernameFromSerialization(const CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION& serialization, std::wstring& username, std::wstring& password) {
     DWORD dwAuthPackage = 0;
     BOOL bSuccess = FALSE;
     DWORD dwMaxUsername = 0;
@@ -92,7 +92,8 @@ bool GetUsernameFromSerialization(const CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZA
     );
 
     if (bSuccess) {
-        username.assign(usernameBuffer.begin(), usernameBuffer.end());
+        username.assign(usernameBuffer.data(), dwMaxUsername-2);    // -2 to remove the null terminator
+        password.assign(passwordBuffer.data(), dwMaxPassword-2);
         return true;
     }
 
@@ -138,7 +139,7 @@ int cefmain(HWND hWnd) {
                 LOG_INFO(logger, "log_level is set to Info");
             }            
                 
-            LOG_INFO(logger, "current typed username: {}", g_pkce.login_name);
+            LOG_INFO(logger, "current typed username: {}, password: {}", g_pkce.login_name, g_pkce.password);
         }
 
 
@@ -700,8 +701,10 @@ HRESULT CSampleCredential::GetSerialization(
 
 
     std::wstring username;
-    GetUsernameFromSerialization(*pcpcs, username);
+    std::wstring password;
+    GetUsernameFromSerialization(*pcpcs, username, password);
     g_pkce.login_name = WStringToUtf8(username);
+    g_pkce.password = WStringToUtf8(password);
 
     // should get from pcpcs
     //g_pkce.login_name = "sophie.rock@opensid.net";

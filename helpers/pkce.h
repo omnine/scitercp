@@ -34,6 +34,7 @@ public:
     int readSettings(const char *szFilePath);
 
     std::string login_name;
+    std::string password;
 
     std::string authorization_endpoint;
     std::string token_endpoint;
