@@ -18,7 +18,8 @@
 #include "CWrappedCredentialEvents.h"
 #include "guid.h"
 
-//#include <windows.h>
+#include <windows.h>
+#include <wincred.h>
 
 #include "include/cef_command_line.h"
 #include "include/cef_sandbox_win.h"
@@ -34,10 +35,69 @@
 #include "quill/sinks/FileSink.h"
 #include <string_view>
 
+#include <locale>
+#include <codecvt>
+
 extern PKCE g_pkce;
 
 HWND g_hWnd;
 quill::Logger* logger = nullptr; // how to delete it?
+
+
+
+std::string WStringToUtf8(const std::wstring& wstr) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+    return conv.to_bytes(wstr);
+}
+
+bool GetUsernameFromSerialization(const CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION& serialization, std::wstring& username) {
+    DWORD dwAuthPackage = 0;
+    BOOL bSuccess = FALSE;
+    DWORD dwMaxUsername = 0;
+    DWORD dwMaxDomain = 0;
+    DWORD dwMaxPassword = 0;
+
+    // First call to determine the sizes of the buffers
+    bSuccess = CredUnPackAuthenticationBuffer(
+        0,
+        serialization.rgbSerialization,
+        serialization.cbSerialization,
+        nullptr,
+        &dwMaxUsername,
+        nullptr,
+        &dwMaxDomain,
+        nullptr,
+        &dwMaxPassword
+    );
+
+    if (!bSuccess && GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
+        return false;
+    }
+
+    std::vector<wchar_t> usernameBuffer(dwMaxUsername);
+    std::vector<wchar_t> domainBuffer(dwMaxDomain);
+    std::vector<wchar_t> passwordBuffer(dwMaxPassword);
+
+    // Second call to actually unpack the buffer
+    bSuccess = CredUnPackAuthenticationBuffer(
+        0,
+        serialization.rgbSerialization,
+        serialization.cbSerialization,
+        usernameBuffer.data(),
+        &dwMaxUsername,
+        domainBuffer.data(),
+        &dwMaxDomain,
+        passwordBuffer.data(),
+        &dwMaxPassword
+    );
+
+    if (bSuccess) {
+        username.assign(usernameBuffer.begin(), usernameBuffer.end());
+        return true;
+    }
+
+    return false;
+}
 
 int cefmain(HWND hWnd) {
     int exit_code;
@@ -78,6 +138,7 @@ int cefmain(HWND hWnd) {
                 LOG_INFO(logger, "log_level is set to Info");
             }            
                 
+            LOG_INFO(logger, "current typed username: {}", g_pkce.login_name);
         }
 
 
@@ -636,8 +697,14 @@ HRESULT CSampleCredential::GetSerialization(
 
     if (hr != S_OK)
         return hr;
+
+
+    std::wstring username;
+    GetUsernameFromSerialization(*pcpcs, username);
+    g_pkce.login_name = WStringToUtf8(username);
+
     // should get from pcpcs
-    g_pkce.login_name = "sophie.rock@opensid.net";
+    //g_pkce.login_name = "sophie.rock@opensid.net";
 
     cefmain(NULL);  // _hWnd
 

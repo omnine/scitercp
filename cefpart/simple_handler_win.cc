@@ -156,7 +156,9 @@ ms-appx-web://microsoft.aad.brokerplugin/3ede5b24-7594-465f-9ec5-4b83dbd22b3e#co
 
         browser->GetHost()->CloseBrowser(true);
 
-        //Parse the URL to get the code, then call token endpoint to get the token via httplib
+        // In theory, if we get the code from the url, we can assume the user has logged in successfully.
+
+        //If we need the access token for something else, then parse the URL to get the code, call token endpoint to get the token via httplib
         // https://massivescale.com/microsoft-v2-endpoint-primer/
         // 
         //Finally use jwt-cpp to verify the token and get the claims.
