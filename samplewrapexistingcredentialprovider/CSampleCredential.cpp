@@ -36,7 +36,6 @@
 
 extern PKCE g_pkce;
 
-HINSTANCE ghInstance = g_hinst;
 HWND g_hWnd;
 quill::Logger* logger = nullptr; // how to delete it?
 
@@ -45,7 +44,7 @@ int cefmain(HWND hWnd) {
     g_hWnd = hWnd;
         std::string log_level = "info";
         CHAR szPath[MAX_PATH] = {0};
-        DWORD dwLen = GetModuleFileNameA(ghInstance, szPath, MAX_PATH);
+        DWORD dwLen = GetModuleFileNameA(g_hinst, szPath, MAX_PATH);
         szPath[dwLen] = NULL;
         CHAR* pName = strrchr(szPath, '\\');
         if (pName != NULL) {
@@ -92,7 +91,7 @@ int cefmain(HWND hWnd) {
 #endif
 
     // Provide CEF with command-line arguments.
-    CefMainArgs main_args(ghInstance);
+    CefMainArgs main_args(g_hinst);
 
     // SimpleApp implements application-level callbacks for the browser process.
     // It will create the first browser instance in OnContextInitialized() after

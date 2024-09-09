@@ -15,6 +15,10 @@
 
 #include "../helpers/pkce.h"
 
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
+extern quill::Logger* logger;
+
 extern HWND g_hWnd;
 extern PKCE g_pkce;
 namespace {
@@ -163,6 +167,8 @@ void SimpleApp::OnContextInitialized() {
   url = g_pkce.get_authorization_endpoint() +  "?client_id=" + g_pkce.get_client_id() + 
   "&response_type=code&scope=openid%20profile&response_mode=fragment&code_challenge=" + code_challenge + "&code_challenge_method=S256&login_hint="
     + g_pkce.login_name;
+
+    LOG_INFO(logger, "url: {}", url);
 
   // Create the first browser window.  
   
