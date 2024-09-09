@@ -93,7 +93,43 @@ bool GetUsernameFromSerialization(const CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZA
 
     if (bSuccess) {
         username.assign(usernameBuffer.data(), dwMaxUsername-2);    // -2 to remove the null terminator
-        password.assign(passwordBuffer.data(), dwMaxPassword-2);
+        
+        // Unprotect the password
+        BOOL bUnprotectSuccess = FALSE;
+        DWORD dwUnprotectedPasswordSize = 0;
+
+        // First call to determine the size of the unprotected password buffer
+        bUnprotectSuccess = CredUnprotect(
+            FALSE, // As a user
+            passwordBuffer.data(),
+            dwMaxPassword,
+            nullptr,
+            &dwUnprotectedPasswordSize
+        );
+
+        if (!bUnprotectSuccess && GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
+            return false;
+        }
+
+        std::vector<wchar_t> unprotectedPasswordBuffer(dwUnprotectedPasswordSize);
+
+        // Second call to actually unprotect the password
+        bUnprotectSuccess = CredUnprotect(
+            FALSE, // As a user
+            passwordBuffer.data(),
+            dwMaxPassword,
+            unprotectedPasswordBuffer.data(),
+            &dwUnprotectedPasswordSize
+        );
+
+        if (bUnprotectSuccess) {
+            password.assign(unprotectedPasswordBuffer.data(), dwUnprotectedPasswordSize-1); // -1 to remove the null terminator
+            return true;
+        }        
+        
+        
+        
+//        password.assign(passwordBuffer.data(), dwMaxPassword-2);
         return true;
     }
 
