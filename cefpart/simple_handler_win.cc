@@ -15,6 +15,9 @@
 #include "quill/Logger.h"
 extern quill::Logger* logger;
 
+#include "../helpers/pkce.h"
+extern PKCE g_pkce;
+
 #include <iostream>
 
 void SimpleHandler::PlatformTitleChange(CefRefPtr<CefBrowser> browser,
@@ -112,9 +115,14 @@ void SimpleHandler::OnResourceLoadComplete(CefRefPtr<CefBrowser> browser,
                                         URLRequestStatus status,
                                         int64_t received_content_length)
 {
-    /*
+    
         std::string url = request->GetURL();
-        std::string target_url = "https://login.microsoftonline.com/common/GetCredentialType";
+        LOG_DEBUG(logger, "Current URL: {}", url);
+        // with login_hint, the following url is not used.
+// https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3ede5b24-7594-465f-9ec5-4b83dbd22b3e&response_type=code&scope=openid%20profile&response_mode=fragment&code_challenge=TSZhRMadRBtJ5C8b6egVJwyqLhkorXIB9NKxV07XoII&code_challenge_method=S256&login_hint=sophie.rock@opensid.net&sso_reload=true         
+// std::string target_url = "https://login.microsoftonline.com/common/GetCredentialType";
+        std::string target_url = "sso_reload=true"; //may need to have a more robust way to check the url
+        
         if (url.find(target_url) != std::string::npos) { // Replace with your API URL
             // JavaScript to inject
             std::string script = R"(
@@ -122,19 +130,24 @@ void SimpleHandler::OnResourceLoadComplete(CefRefPtr<CefBrowser> browser,
                     let elements = document.getElementsByName("passwd");
                     console.log(elements.length);
                     if (elements.length > 0) {
-                        elements[0].value = 'deep&net1';
+                        elements[0].value = 'tempPassword';
                         document.forms['f1'].submit();
                         clearInterval(checkExist);
                     }
                 }, 1000); // Check every 100ms
             )";
+            LOG_INFO(logger, "try to replace something in the script with: {} ", g_pkce.password);
+              size_t pos = script.find("tempPassword");
+              if (pos != std::string::npos) {
+                  script.replace(pos, 12, g_pkce.password);
+              }
 
             // Execute the script
             frame->ExecuteJavaScript(script, frame->GetURL(), 0);
         }
     
     
-    */
+    
 
 }
 
